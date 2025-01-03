@@ -19,3 +19,4 @@ npm run dev -- --open
 ## Reach goals
 - Fake events that will sway certain types of companies (ie: MASSIVE SOLAR FLARE HITS EARTH, NVDA BANKRUPT)
 - Game over for going bankrupt, start over screen.
+- Recurring purchases (just so we're on the same page-- this is all still fake money)
