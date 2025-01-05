@@ -1,19 +1,26 @@
 <script lang="ts">
-    export let candles: number[];
 
+	type Properties = {
+		candles: number[],
+		symbol: string,
+		height: number
+	}
+
+	let { candles, symbol, height = 100 }: Properties = $props();
     type LineSegment = {
 		x1: number;
 		y1: number;
 		x2: number;
 		y2: number;
+		trending: boolean
 	};
 
-    let trending = false;
-    let width = 300;
-	let height = 100;
+	
+	let id = `${symbol}_graph`;
+    let width = $state(100);
 
 	let minTime = 0;
-	let maxTime = 24 * 60/5;
+	let maxTime = 288;
 
 	let minPrice = 60;
 	let maxPrice = 160;
@@ -82,11 +89,11 @@
 		}
 	}
 
-	function createLineSegments(candles: number[]): LineSegment[] {
+	function createLineSegments(): LineSegment[] {
 		if (candles.length < 2) return [];
 
 		const segments: LineSegment[] = [];
-		trending = candles[0] < candles[candles.length - 1];
+		let trending = candles[0] < candles[candles.length - 1];
 
 		for (let i = 1; i < candles.length; i++) {
 			const prev = candles[i - 1];
@@ -97,45 +104,53 @@
 			const x2 = scaleX(i);
 			const y2 = scaleY(curr);
 
-			segments.push({ x1, y1, x2, y2 });
+			segments.push({ x1, y1, x2, y2, trending });
 		}
 
 		return segments;
 	}
 
+	$effect(() => {
+		createLineSegments()
+	})
 </script>
 
-<svg {width} {height} style="border:1px solid #ccc;">
+<svg {height} class="stock-graph" {id} bind:clientWidth={width}>
 	{refresh()}
 
-    {#if candles[0]}
-        <line
-            x1="10"
-            y1={scaleY(candles[0])}
-            x2={width}
-            y2={scaleY(candles[0])}
-            stroke="black"
-            stroke-width="5"
-            stroke-linecap="round"
-            stroke-dasharray="1, 10"
-            stroke-opacity="0.5"
-        />
-    {/if}
+	{#if candles[0]}
+		<line
+			x1="10"
+			y1={scaleY(candles[0])}
+			x2={width}
+			y2={scaleY(candles[0])}
+			stroke="black"
+			stroke-width="5"
+			stroke-linecap="round"
+			stroke-dasharray="1, 10"
+			stroke-opacity="0.5"
+		/>
+	{/if}
 
-    {#each createLineSegments(candles) as segment}
-        <line
-            class={trending ? "positive" : "negative"}
-            x1={segment.x1}
-            y1={segment.y1}
-            x2={segment.x2}
-            y2={segment.y2}
-            stroke-width="2"
-        />
-    {/each}
+	{#each createLineSegments() as segment}
+		<line
+			class={segment.trending ? "positive" : "negative"}
+			x1={segment.x1}
+			y1={segment.y1}
+			x2={segment.x2}
+			y2={segment.y2}
+			stroke-width="2"
+		/>
+	{/each}
 </svg>
 
 
 <style>
+	.stock-graph {
+		border:1px solid #ccc;
+		width: 100%;
+	}
+
     line {
 		stroke-width: 2;
 	}

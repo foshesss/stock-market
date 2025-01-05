@@ -7,7 +7,7 @@
 
     // 100 - 83
 
-    let negative = (currentPrice - openPrice) < 0;
+    let trending = (currentPrice - openPrice) > 0;
     let diff = Math.abs(currentPrice - openPrice).toFixed(2);
     let diffPercent = openPrice === 0 ? "-%" : `${(((currentPrice - openPrice)/openPrice) * 100).toFixed(2)}%`;
 
@@ -16,12 +16,12 @@
 </script>
 
 <p>
-    <span class={negative ? "negative" : "positive"}>
+    <span class={trending ? "positive" : "negative"}>
         {#if showArrow}
-        {negative ? '▼' : '▲'}
+        {trending ? '▲' : '▼'}
         {/if}
         {#if showPrice}
-            {#if negative}-{/if}${diff}
+            {#if !trending}-{/if}${diff}
         {/if}
         {#if showPercentage}
             ({diffPercent})
@@ -31,10 +31,6 @@
 </p>
 
 <style>
-    line {
-		stroke-width: 2;
-	}
-
 	.negative {
 		stroke: rgba(255, 80, 0);
 		color: rgba(255, 80, 0);

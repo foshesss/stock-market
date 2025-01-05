@@ -80,7 +80,7 @@
 		{#key step}
 			<MovementTicker currentPrice={currentPrice} openPrice={currentDailyData.open} />
 		{/key}
-		<StockGraph candles={currentDailyData.minute5Price} />
+		<StockGraph candles={currentDailyData.minute5Price} {symbol} />
 	</div>
 {/snippet}
 
@@ -111,6 +111,7 @@
 		<h2>${currentMoney.toFixed(2)}</h2>
 
 		<MovementTicker currentPrice={currentMoney} openPrice={currentMoney} />
+		<StockGraph candles={new Array(289).fill(100)} symbol={"DAILY_MOVEMENT"} height={500} />
 	</div>
 	<div id="mini-stocks">
 		<h1>Shares</h1>
