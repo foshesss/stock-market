@@ -10,7 +10,7 @@
 
 	// register all stocks
 	let stocks: Stock[] = [];
-	STOCKS.forEach((symbol) => stocks.push(new Stock(symbol, 2, 100)));
+	STOCKS.forEach((symbol) => stocks.push(new Stock(symbol, .25, 100)));
 
 	let currentMoney = 1000;
 	let portfolioStore = writable(new Map<string, number>());

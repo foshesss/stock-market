@@ -67,10 +67,10 @@ class Stock {
         let { day, hour, minute } = getTime(t);
 
         // little bit of random walk
-        this.currentPrice = this.currentPrice * (1 + .001) + randn() * this.volatility;
+        this.currentPrice = this.currentPrice + randn() * this.volatility;
         
         // perlin noise to make this look semi realistic
-        let p = noise2D(t * .1, this.seed) * .5;
+        let p = noise2D(t * .1, this.seed) * this.volatility;
         this.currentPrice += p;
         
         // random shock lul

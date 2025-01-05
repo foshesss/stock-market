@@ -65,8 +65,8 @@
 			const absoluteMax = Math.max(...candles);
 			
 			// Determine padding relative to the average price
-			const bottomPadding = 30;
-			const topPadding = 30;
+			const bottomPadding = 5;
+			const topPadding = 5;
 
 			// Adjust min and max prices with padding
 			minPrice = Math.max(0, absoluteMin - bottomPadding);
