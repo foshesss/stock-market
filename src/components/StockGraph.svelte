@@ -50,34 +50,40 @@
 		return linearScale(price, minPrice, maxPrice, height, 0);
 	};
 
+	// this is so wrong, i can't even begin to explain how wrong it is.
+	// my problem is that i need to recalculate the graph bounds per stock, and i need it done
+	// before the svg starts rendering.
+	// the only solution i could quickly think of before going to bed was a refresh function, called
+	// before the graph is rendered.
+	function refresh() {
+		if (candles.length === 0) {
+			minPrice = -1;
+			maxPrice = 1;
+		} else {
+			// Calculate min, max, and average prices
+			const absoluteMin = Math.min(...candles);
+			const absoluteMax = Math.max(...candles);
+			
+			// Determine padding relative to the average price
+			const bottomPadding = 30;
+			const topPadding = 30;
+
+			// Adjust min and max prices with padding
+			minPrice = Math.max(0, absoluteMin - bottomPadding);
+			maxPrice = absoluteMax + topPadding;
+
+			// Ensure there is a minimum padding for very small ranges
+			const minimumRange = (absoluteMax - absoluteMin) * 0.1; // Add at least 10% of the range as padding
+			if (maxPrice - minPrice < minimumRange) {
+				const additionalPadding = (minimumRange - (maxPrice - minPrice)) / 2;
+				minPrice = Math.max(0, minPrice - additionalPadding);
+				maxPrice = maxPrice + additionalPadding;
+			}
+		}
+	}
+
 	function createLineSegments(candles: number[]): LineSegment[] {
 		if (candles.length < 2) return [];
-
-        
-        if (candles.length === 0) {
-            minPrice = -1;
-            maxPrice = 1;
-        } else {
-            // Calculate min, max, and average prices
-            const absoluteMin = Math.min(...candles);
-            const absoluteMax = Math.max(...candles);
-            
-            // Determine padding relative to the average price
-            const bottomPadding = 30;
-            const topPadding = 30;
-
-            // Adjust min and max prices with padding
-            minPrice = Math.max(0, absoluteMin - bottomPadding);
-            maxPrice = absoluteMax + topPadding;
-
-            // Ensure there is a minimum padding for very small ranges
-            const minimumRange = (absoluteMax - absoluteMin) * 0.1; // Add at least 10% of the range as padding
-            if (maxPrice - minPrice < minimumRange) {
-                const additionalPadding = (minimumRange - (maxPrice - minPrice)) / 2;
-                minPrice = Math.max(0, minPrice - additionalPadding);
-                maxPrice = maxPrice + additionalPadding;
-            }
-        }
 
 		const segments: LineSegment[] = [];
 		trending = candles[0] < candles[candles.length - 1];
@@ -100,6 +106,8 @@
 </script>
 
 <svg {width} {height} style="border:1px solid #ccc;">
+	{refresh()}
+
     {#if candles[0]}
         <line
             x1="10"
