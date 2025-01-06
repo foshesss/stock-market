@@ -7,14 +7,6 @@
 	}
 
 	let { candles, symbol, height = 100 }: Properties = $props();
-    type LineSegment = {
-		x1: number;
-		y1: number;
-		x2: number;
-		y2: number;
-		trending: boolean
-	};
-
 	
 	let id = `${symbol}_graph`;
     let width = $state(100);
