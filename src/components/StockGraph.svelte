@@ -89,30 +89,21 @@
 		}
 	}
 
-	function createLineSegments(): LineSegment[] {
-		if (candles.length < 2) return [];
+	function createPathData() {
+		if (candles.length < 2) return { d: '', trending: false };
 
-		const segments: LineSegment[] = [];
-		let trending = candles[0] < candles[candles.length - 1];
+		const trending = candles[0] < candles[candles.length - 1];
+		let d = `M${scaleX(0)},${scaleY(candles[0])}`;
 
 		for (let i = 1; i < candles.length; i++) {
-			const prev = candles[i - 1];
-			const curr = candles[i];
-
-			const x1 = scaleX(i - 1);
-			const y1 = scaleY(prev);
-			const x2 = scaleX(i);
-			const y2 = scaleY(curr);
-
-			segments.push({ x1, y1, x2, y2, trending });
+			d += ` L${scaleX(i)},${scaleY(candles[i])}`;
 		}
 
-		return segments;
+		return { d, trending };
 	}
 
-	$effect(() => {
-		createLineSegments()
-	})
+	let pathInfo = $state(createPathData())
+	$effect(() => { pathInfo = createPathData() })
 </script>
 
 <svg {height} class="stock-graph" {id} bind:clientWidth={width}>
@@ -132,18 +123,15 @@
 		/>
 	{/if}
 
-	{#each createLineSegments() as segment}
-		<line
-			class={segment.trending ? "positive" : "negative"}
-			x1={segment.x1}
-			y1={segment.y1}
-			x2={segment.x2}
-			y2={segment.y2}
-			stroke-width="2"
-		/>
-	{/each}
+	<!-- Single continuous path -->
+	<path
+		class={pathInfo.trending ? 'positive' : 'negative'}
+		d={pathInfo.d}
+		stroke-width="2"
+		stroke-opacity="1"
+		fill="none"
+	/>
 </svg>
-
 
 <style>
 	.stock-graph {
