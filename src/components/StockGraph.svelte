@@ -1,9 +1,9 @@
 <script lang="ts">
 
-	type Properties = {
+	interface Properties {
 		candles: number[],
 		symbol: string,
-		height: number
+		height?: number
 	}
 
 	let { candles, symbol, height = 100 }: Properties = $props();
