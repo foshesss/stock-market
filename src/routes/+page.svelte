@@ -67,7 +67,7 @@
 		<h2>${Portfolio.totalValue.toFixed(2)}</h2>
 
 		{#key step}
-			<MovementTicker currentPrice={Portfolio.totalValue} openPrice={Portfolio.totalValue} />
+			<MovementTicker currentPrice={Portfolio.value} openPrice={Portfolio.currentDailyData.open} />
 			<StockGraph candles={Portfolio.currentDailyData.minute5Value} symbol={"DAILY_MOVEMENT"} height={300} />
 		{/key}
 	</div>
